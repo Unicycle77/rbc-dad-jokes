@@ -15,6 +15,7 @@ class Jokelist extends Component {
     super(props);
     this.state = {jokes:[]};
     this.getJokes = this.getJokes.bind(this);
+    this.handleVote = this.handleVote.bind(this);
   }
 
   componentDidMount() {
@@ -26,13 +27,26 @@ class Jokelist extends Component {
     //Load jokes
     while (jokes.length < count) {
       let res = await axios.get(API_URL, { headers: { Accept: "application/json" } });
-      let newJoke = res.data;
+      let newJoke = {
+        id: res.data.id,
+        text: res.data.joke,
+        votes: 0
+      };
       // if it's a new joke add it to the new joke array
       // TODO: Check if the joke is new
       jokes.push(newJoke);
       console.log(newJoke);
     }
     this.setState({jokes: jokes});
+  }
+
+  handleVote(id, delta) {
+    this.setState(
+      st => ({
+        jokes: st.jokes.map(j =>
+          j.id === id ? {...j, votes: j.votes + delta} : j)
+      })
+    )
   }
 
   render() {
@@ -46,10 +60,15 @@ class Jokelist extends Component {
           <button className="JokeList-getmore">New Jokes</button>
         </div>
         <div className="JokeList-jokes">
-          {this.state.jokes.map(j => {
-            return ( <Joke key={j.id} joke={j.joke} /> )
-          })
-          }
+          {this.state.jokes.map(j => (
+            <Joke
+              key={j.id}
+              text={j.text}
+              votes={j.votes}
+              upvote={() => this.handleVote(j.id, 1)}
+              downvote={() => this.handleVote(j.id, -1)}
+            />
+          ))}
         </div>
       </div>
     )
