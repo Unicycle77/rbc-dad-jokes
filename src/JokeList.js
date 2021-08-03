@@ -74,9 +74,7 @@ class Jokelist extends Component {
   }
 
   handleClick() {
-    if(this.state.jokes.length < this.props.maxJokes) {
-      this.setState({loading: true}, this.getJokes);
-    }
+    this.setState({loading: true}, this.getJokes);
   }
 
   render() {
