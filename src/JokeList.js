@@ -44,7 +44,7 @@ class Jokelist extends Component {
         };
         // if it's a new joke add it to the new joke array
         // TODO: Check if the joke is new
-        if(!jokes.some(j => j.id === newJoke.id)) {
+        if(![...jokes, ...this.state.jokes].some(j => j.id === newJoke.id)) {
           jokes.push(newJoke);
           // console.log(newJoke);
         } else {
